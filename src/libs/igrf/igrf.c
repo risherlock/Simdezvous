@@ -96,7 +96,7 @@ uint8_t igrf(const date_time dt, const float x_sph[3], float b_ned[3])
   }
 
   float pnm, dpnm, p11, dp11, p10, dp10, p20, dp20;
-  float br, bt, bp; // radial, theta, and phi components
+  float br = 0.0f, bt = 0.0f, bp = 0.0f; // radial, theta, and phi components
 
   // n = m = 0
   p11 = 1;
