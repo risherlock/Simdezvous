@@ -40,17 +40,28 @@ Outline:
   1. Recursively calculate Legendre polynomials and its derivatives.
   2. Compute magnetic field strength using terms computed in 1.
 */
+#include <stdio.h>
 uint8_t igrf(const date_time dt, const float x_sph[3], float b_ned[3])
 {
-  const float a = 6371.2; // Radius of Earth, Km
-
+  const float a_ = 6371.2; // Radius of Earth, km
   const float theta = PI_2 - x_sph[0] * D2R;
   const float phi = x_sph[1] * D2R;
-  const float radius = x_sph[2] + a;
+  const float radius = x_sph[2] + a_;
 
-  float ct, st;
+  double ct, st;
   ct = cos(theta);
   st = sin(theta);
+
+  double a = 6378.137;
+  double f = 1/298.257223563;
+  double b = a*(1 - f);
+  double rho = hypot(a*st, b*ct);
+  double r = sqrt(x_sph[2]*x_sph[2] + 2*x_sph[2]*rho + (a*a*a*a*st*st + b*b*b*b*ct*ct) / (rho*rho) );
+  double cd = (x_sph[2] + rho) / r;
+  double sd = (a*a - b*b) / rho*ct*st / r;
+  float oldcos = ct;
+  ct = ct * cd - st * sd;
+  st = st * cd + oldcos * sd;
 
   // Avoid singularity
   float epsilon = 1e-8;
@@ -158,6 +169,9 @@ uint8_t igrf(const date_time dt, const float x_sph[3], float b_ned[3])
   b_ned[1] = -bp / st;
   b_ned[2] = -br;
 
+  // float bx_old = b_ned[0];
+  // b_ned[0] = b_ned[0]*cd + b_ned[2]*sd;
+  // b_ned[2] = b_ned[2]*cd - bx_old*sd;
   return 1;
 }
 
