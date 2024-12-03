@@ -25,7 +25,7 @@ int main()
   // 221B Baker Street
   const float latitude = 51.5238; // deg
   const float longitude = -0.1586; // deg
-  const float height = 10000.0; // km
+  const float height = 1000.0; // km
   const float x_sph[3] = {latitude, longitude, height};
 
   // Magnetic field in NED frame
@@ -43,9 +43,9 @@ int main()
     printf("  Bn: %f nT\n", b_ned[0]);
     printf("  Be: %f nT\n", b_ned[1]);
     printf("  Bd: %f nT\n", b_ned[2]);
-    printf("  Magnitude: %f nT\n", igrf_get_norm(b_ned));
-    printf("  Inclination: %f deg\n", igrf_get_inclination(b_ned) * R2D);
-    printf("  Declination: %f deg\n", igrf_get_declination(b_ned) * R2D);
+    // printf("  Magnitude: %f nT\n", igrf_get_norm(b_ned));
+    // printf("  Inclination: %f deg\n", igrf_get_inclination(b_ned) * R2D);
+    // printf("  Declination: %f deg\n", igrf_get_declination(b_ned) * R2D);
   }
   else
   {
