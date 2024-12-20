@@ -5,3 +5,6 @@ A rendezvous and docking simulator for LEO CubeSats. This project is being devel
 ## Folder structure
 
 1. [docs](/docs/report.tex) - Documentation of the project.
+2. [octave](/octave/) - Octave prototypes and tests.
+3. [src](/src/) - Simdezvous source files.
+
