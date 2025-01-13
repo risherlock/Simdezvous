@@ -105,19 +105,19 @@ uint8_t igrf(const date_time dt, const float x_sph[3], float b_ned[3])
   float ar_pow[IGRF_DEGREE];
   const float ar = a / r;
   ar_pow[0] = ar * ar * ar;
-  for (uint8_t i = 1; i <= IGRF_DEGREE; i++)
+  for (uint8_t i = 1; i < IGRF_DEGREE; i++)
   {
     ar_pow[i] = ar_pow[i - 1] * ar;
   }
 
   // [b] Re-occurring sines and cosines
-  float sines[IGRF_DEGREE], cosines[IGRF_DEGREE];
+  float sines[IGRF_DEGREE+1], cosines[IGRF_DEGREE+1];
   sines[0] = 0;
   cosines[0] = 1;
   sines[1] = sin(phi);
   cosines[1] = cos(phi);
 
-  for (uint8_t i = 2; i < IGRF_DEGREE; i++)
+  for (uint8_t i = 2; i <= IGRF_DEGREE; i++)
   {
     if (i & 1)
     {

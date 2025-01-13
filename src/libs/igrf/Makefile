@@ -1,5 +1,5 @@
 all: clean
-	gcc main.c igrf.c -Wall -lm
+	gcc main.c igrf.c -g -Wall -Wextra -Werror -pedantic -fsanitize=undefined,address -lm
 	./a.out
 
 clean:
