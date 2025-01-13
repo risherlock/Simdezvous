@@ -31,20 +31,23 @@ state = zeros(7, length(time));
 state(:,1) = [q0; w0];
 
 % Integration loop
-for t = 1:length(time)-1
+for t = 1:5
   q = state(1:4, t);
-  w = state(5:7, t);
+  w = state(5:7, t)
 
   % Control torque
   dq = qerr(qd, q);
-  tau = -kp * sign(dq(4)) * dq(1:3) - kd * w;
+  tau = -kp * sign(dq(4)) * dq(1:3) - kd * w
 
   % Numerical integration
   fn = @(state)dynamics(state, I, tau);
   state(:, t+1) = rk4(fn, state(:,t), dt);
 
+
   % Quaternion normalization
+  state(1:4,t+1)
   state(1:4, t+1) = state(1:4, t+1) / norm(state(1:4, t+1));
+  state(1:4,t+1)
 end
 
 % Quaternions
