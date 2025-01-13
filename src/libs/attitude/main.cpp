@@ -47,7 +47,6 @@ state_t get_err(const state_t xd, const state_t xf)
 int main()
 {
   // Simulation params [s]
-  double start_time = 0;
   double stop_time = 300;
   double dt = 1;
   const size_t n = stop_time / dt;
