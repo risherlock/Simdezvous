@@ -1,5 +1,3 @@
-#include <Eigen>
-
 #include "rigid.h"
 #include "attitude.h"
 

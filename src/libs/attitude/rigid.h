@@ -1,6 +1,8 @@
 #ifndef _SIMDEZVOUS_RIGID_H_
 #define _SIMDEZVOUS_RIGID_H_
 
+#include <Eigen>
+
 typedef struct
 {
   double q[4], w[3];
