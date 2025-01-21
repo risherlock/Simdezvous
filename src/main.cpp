@@ -2,12 +2,23 @@
 #include <Eigen>
 #include "attitude.h"
 #include "rigid.h"
+#include "igrf.h"
 
 #define D2R 0.01745329251
 #define R2D 57.2957795131
 
 void controlLaw()
 {
+}
+
+void ned_to_satellite(double b_ned[3], double b_sat[3])
+{
+
+    ned_to_eci();
+
+
+
+
 }
 
 state_t get_err(const state_t xd, const state_t xf)
@@ -62,12 +73,12 @@ int main()
     dt.minute = 0;
     dt.second = 0;
 
-    const double magnetic_vector;
-    igrf(dt, x_sph, magnetic_vector);
+    float magnetic_vector[3] = {0.0};
+    igrf(dt, x_sph, magnetic_vector)
 
     // steps:
     // describe vector as quaternion
-    // convert a quaternion from earth's frame to frame of satellite
+    // convert a quaternion from (NED) earth's frame to frame of satellite
     // find rotation matrix from current rotation matrix
 
     // Desired state

@@ -5,7 +5,7 @@
 #include "maps.h"
 
 #define M_PI_2 1.57079632679489661923
-#define M_PI 2 * 1.57079632679489661923
+// #define M_PI 2 * 1.57079632679489661923
 
 // Choose an angle on infinite solutions
 #define ANGLE_ON_SINGULARITY_RAD 0.0f

@@ -1,7 +1,7 @@
 function y_new = rk4(f, y, dt)
 % Fourth order Runge-Kutta integrator
 
-  k1 = f(y)
+  k1 = f(y);
   k2 = f(y + 0.5 * dt * k1);
   k3 = f(y + 0.5 * dt * k2);
   k4 = f(y + dt * k3);

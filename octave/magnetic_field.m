@@ -16,4 +16,5 @@ n = N/L;
 I = 3; %A
 
 B=mu*n*I % Tesla
+% 15.281
 
