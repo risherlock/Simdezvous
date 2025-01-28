@@ -1,51 +1,38 @@
-/*
-  Tested against NOAA calculator.
-  https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml?
-
-  2023-12-17
-*/
+// Use case of IGRF-14 implementation.
+// 2021-12-17
 
 #include <stdio.h>
 #include "igrf.h"
 
-#define R2D 57.2957795131
-#define D2R 0.01745329251
-
 int main()
 {
-  // Time
-  date_time dt;
-  dt.year = 2023;
-  dt.month = 12;
-  dt.day = 17;
-  dt.hour = 0;
-  dt.minute = 0;
-  dt.second = 0;
+  // Miss Violet Smith disturbed Holmes 130 years ago on this day
+  const igrf_time_t dt = {.year = 2025, .month = 04, .day = 23, 0, 0, 0};
 
-  // 221B Baker Street
-  const float latitude = 51.5238; // deg
-  const float longitude = -0.1586; // deg
-  const float height = 1000.0; // km
-  const float x_sph[3] = {latitude, longitude, height};
+  // Geodetic coordinates of 221B Baker Street on LEO
+  const double latitude = 51.523788; // deg
+  const double longitude = -0.158611; // deg
+  const double altitude = 400.0; // km
+  const double x[3] = {latitude, longitude, altitude};
 
   // Magnetic field in NED frame
-  float b_ned[3] = {0.0};
+  double b[3] = {0.0};
+  bool status = igrf(dt, x, IGRF_GEODETIC, b);
 
-  // Compute and print
-  if(igrf(dt, x_sph, b_ned))
+  if (status)
   {
     printf("Inputs:\n");
-    printf("  Date: %d-%d-%d, %d:%d:%d\n", dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
-    printf("  Latitude: %f deg\n", latitude);
-    printf("  Longitude: %f deg\n", longitude);
-    printf("  Height: %f km\n", height);
+    printf("  Time      : %d-%d-%d, %d:%d:%d\n", dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
+    printf("  Latitude  : %f deg\n", latitude);
+    printf("  Longitude : %f deg\n", longitude);
+    printf("  Altitude  : %f km\n", altitude);
     printf("\nOutputs:\n");
-    printf("  Bn: %f nT\n", b_ned[0]);
-    printf("  Be: %f nT\n", b_ned[1]);
-    printf("  Bd: %f nT\n", b_ned[2]);
-    // printf("  Magnitude: %f nT\n", igrf_get_norm(b_ned));
-    // printf("  Inclination: %f deg\n", igrf_get_inclination(b_ned) * R2D);
-    // printf("  Declination: %f deg\n", igrf_get_declination(b_ned) * R2D);
+    printf("  Bn          : %f nT\n", b[0]);
+    printf("  Be          : %f nT\n", b[1]);
+    printf("  Bd          : %f nT\n", b[2]);
+    printf("  Magnitude   : %f nT\n", igrf_mag(b));
+    printf("  Inclination : %f deg\n", igrf_inc(b) * R2D);
+    printf("  Declination : %f deg\n", igrf_dec(b) * R2D);
   }
   else
   {
@@ -54,3 +41,21 @@ int main()
 
   return 0;
 }
+
+/*
+Expected output:
+
+Inputs:
+  Time      : 2025-4-23, 0:0:0
+  Latitude  : 51.523788 deg
+  Longitude : -0.158611 deg
+  Altitude  : 400.000000 km
+
+Outputs:
+  Bn          : 16625.026351 nT
+  Be          : 69.051911 nT
+  Bd          : 37532.201921 nT
+  Magnitude   : 41049.512182 nT
+  Inclination : 66.108694 deg
+  Declination : 0.237976 deg
+*/

@@ -1,28 +1,28 @@
-/*
-  Implementation of IGRF Model.
-
-  References:
-    [1] Davis - Mathematical Modeling of Earth's Magnetic Field (2004)
-    [2] Yang - Spacecraft Modeling Attitude Determination and Control (2019)
-
-  Optimizations [a] and [b] are due to Alar Leibak from Estonia.
-
-  Rishav (2021-12-26)
-*/
+/**
+ * @brief Implementation of International Geomagnetic Reference Field (IGRF-14) Model.
+ * @cite Davis - Mathematical Modeling of Earth's Magnetic Field (2004)
+ * @author risherlock
+ * @date 2021-12-26
+ */
 
 #ifndef _IGRF_H_
 #define _IGRF_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-#include "igrf13.h"
+#include "igrf_2025.h"
 
-#include <math.h>
+#include <stdbool.h>
 #include <inttypes.h>
 
-typedef struct date_time_t
+#define R2D 57.2957795131
+#define D2R 0.01745329251
+#define M_PI_2 1.57079632679489661923
+
+typedef struct
 {
   uint16_t year;
   uint8_t month;
@@ -30,12 +30,18 @@ typedef struct date_time_t
   uint8_t hour;
   uint8_t minute;
   uint8_t second;
-}date_time;
+} igrf_time_t;
 
-uint8_t igrf(const date_time dt, const float x_sph[3], float b_ned[3]);
-float igrf_get_inclination(const float b_ned[3]);
-float igrf_get_declination(const float b_ned[3]);
-float igrf_get_norm(const float b_ned[3]);
+typedef enum
+{
+  IGRF_GEODETIC,
+  IGRF_GEOCENTRIC
+} igrf_frame_t;
+
+double igrf_mag(const double b[3]);
+double igrf_inc(const double b[3]);
+double igrf_dec(const double b[3]);
+bool igrf(const igrf_time_t t, const double x[3], const igrf_frame_t f, double b[3]);
 
 #ifdef __cplusplus
 }
