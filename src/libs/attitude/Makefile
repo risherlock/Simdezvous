@@ -23,6 +23,9 @@ $(TARGET): $(SRC)
 run: all
 	./$(BUILD_DIR)/$(TARGET)
 
+plot:
+	octave plot_output.m
+
 clean:
 	rm -rf $(BUILD_DIR)
 

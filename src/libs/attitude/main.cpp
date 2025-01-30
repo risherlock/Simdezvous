@@ -1,5 +1,4 @@
 #include <math.h>
-#include <vector>
 #include <fstream>
 #include <iostream>
 
@@ -12,7 +11,7 @@
 
 int sign(double x)
 {
-  if(x<0)
+  if (x < 0)
   {
     return -1;
   }
@@ -31,17 +30,14 @@ void control_law(const state_t err, const double kp, const double kd, double tau
 
 state_t get_err(const state_t xd, const state_t xf)
 {
-  state_t xerr;
+  state_t xe;
 
-  quat_err(xd.q, xf.q, xerr.q);
-  // xerr.w[0] = xd.w[0] - xf.w[0];
-  // xerr.w[1] = xd.w[1] - xf.w[1];
-  // xerr.w[2] = xd.w[2] - xf.w[2];
-  xerr.w[0] = xf.w[0];
-  xerr.w[1] = xf.w[1];
-  xerr.w[2] = xf.w[2];
+  quat_err(xd.q, xf.q, xe.q);
+  xe.w[0] = xf.w[0];
+  xe.w[1] = xf.w[1];
+  xe.w[2] = xf.w[2];
 
-  return xerr;
+  return xe;
 }
 
 int main()
@@ -64,7 +60,7 @@ int main()
   x0.q[1] = 0.685;
   x0.q[2] = 0.695;
   x0.q[3] = 0.153;
-  x0.w[0] = -0.53 * D2R;
+  x0.w[0] = 0.53 * D2R;
   x0.w[1] = 0.53 * D2R;
   x0.w[2] = 0.053 * D2R;
 
@@ -78,29 +74,22 @@ int main()
   xd.w[1] = 0.0f;
   xd.w[2] = 0.0f;
 
-  std::vector<state_t> x;
-  x.push_back(x0);
-
+  static state_t x = x0;
   std::ofstream file;
   file.open("output.csv");
 
-   file << double(0) << ","
-         << x0.q[0] << "," << x0.q[1] << "," << x0.q[2] << "," << x0.q[3] << ","
-         << x0.w[0] << "," << x0.w[1] << "," << x0.w[2] << std::endl;
-
   for (size_t i = 0; i < n; i++)
   {
-    state_t xerr = get_err(xd, x[i]);
-   
+    state_t xe = get_err(x, xd);
+
     double tau[3];
-    control_law(xerr, kp, kd, tau);
+    control_law(xe, kp, kd, tau);
+    x = rk4(x, dt, I, tau);
+    quat_normalize(x.q);
 
-    x.push_back(rk4(x[i], dt, I, tau));
-    quat_normalize(x[i+1].q);
-
-    file << double((i+1) * dt) << ","
-         << x[i+1].q[0] << "," << x[i+1].q[1] << "," << x[i+1].q[2] << "," << x[i+1].q[3] << ","
-         << x[i+1].w[0] << "," << x[i+1].w[1] << "," << x[i+1].w[2] << std::endl;
+    file << double((i + 1) * dt) << ","
+         <<  x.q[0] << "," <<  x.q[1] << "," <<  x.q[2] << "," <<  x.q[3] << "," <<  x.w[0] << "," <<  x.w[1] << "," <<  x.w[2]
+         << xe.q[0] << "," << xe.q[1] << "," << xe.q[2] << "," << xe.q[3] << "," << xe.w[0] << "," << xe.w[1] << "," << xe.w[2]
+         <<  tau[0] << "," <<  tau[1] << "," <<  tau[2] << std::endl;
   }
 }
-
